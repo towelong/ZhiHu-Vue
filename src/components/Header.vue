@@ -32,11 +32,27 @@
         </ul>
       </nav>
       <div class="user-info">
-        <el-avatar :size="50" @click="login">未登录</el-avatar>
-        <div class="popover" :class="{ popoverHide: loginVisible == false }">
-          <ul @mouseleave="loginVisible = false">
-            <li>个人主页</li>
-            <li>退出登录</li>
+        <el-avatar
+          :size="50"
+          @click="login"
+          v-if="nickname == null || nickname == ''"
+          >未登录</el-avatar
+        >
+        <el-avatar
+          :size="50"
+          @click="lookUserDetail"
+          :src="avatar"
+          v-else
+        ></el-avatar>
+        <div
+          class="popover"
+          :class="{ popoverHide: loginVisible == false }"
+          @mouseleave="loginVisible = false"
+        >
+          <ul>
+            <li>{{ nickname }}</li>
+            <li @click="toUserPage">个人主页</li>
+            <li @click="loginOut">退出登录</li>
           </ul>
         </div>
       </div>
@@ -45,14 +61,10 @@
 </template>
 
 <script>
-import {
-  reactive,
-  toRefs,
-  onMounted,
-  watchEffect,
-} from "vue";
+import { reactive, toRefs, onMounted, watchEffect } from "vue";
 import router from "../router";
 import routes from "../router/routes";
+import Cookies from "js-cookie";
 
 export default {
   name: "Header",
@@ -61,6 +73,8 @@ export default {
     const state = reactive({
       isActive: 0,
       loginVisible: false,
+      nickname: "",
+      avatar: "",
       menu: [
         {
           name: "首页",
@@ -81,17 +95,36 @@ export default {
       ],
     });
 
-    onMounted(() => {
-      // const { ctx } = getCurrentInstance();
-      // console.log(ctx.$router.currentRoute.value.path);
+    onMounted(async () => {
+      getUserDetail();
     });
+
+    function getUserDetail() {
+      const data = Cookies.getJSON("user");
+      if (data) {
+        const { nickname, avatar } = data;
+        state.nickname = nickname;
+        state.avatar = avatar;
+      }
+    }
+
+    function lookUserDetail() {
+      state.loginVisible = !state.loginVisible;
+    }
+
+    function loginOut() {
+      Cookies.remove("access_token");
+      Cookies.remove("refresh_token");
+      Cookies.remove("user");
+      router.go(0);
+    }
 
     function tab(index) {
       state.isActive = index;
     }
     function login() {
-      console.log("login status");
-      state.loginVisible = !state.loginVisible;
+      router.push("/login");
+      state.loginVisible = false;
     }
 
     function checkRouterLocal(path) {
@@ -129,6 +162,10 @@ export default {
       return bool;
     }
 
+    function toUserPage(){
+      router.push("/user")
+    }
+
     watchEffect(() => {
       let path = router.currentRoute.value.path;
       checkRouterLocal(path);
@@ -140,6 +177,10 @@ export default {
       checkRouterLocal,
       hasNavRoute,
       login,
+      getUserDetail,
+      loginOut,
+      lookUserDetail,
+      toUserPage
     };
   },
 };
@@ -170,6 +211,9 @@ ul li {
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+}
+ul li:hover {
+  color: #0084ff;
 }
 .container {
   display: flex;

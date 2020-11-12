@@ -47,9 +47,7 @@ export default {
       }
     }
 
-    onMounted(() => {
-      console.log("=====nav->onMounted====");
-    });
+    onMounted(() => {});
     watchEffect(() => {
       let path = router.currentRoute.value.path;
       checkRouterLocal(path);
@@ -80,7 +78,7 @@ ul {
   display: flex;
   flex-direction: row;
 }
-ul li{
+ul li {
   padding: 0 20px;
 }
 
