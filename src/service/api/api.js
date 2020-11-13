@@ -21,7 +21,7 @@ export function _get(url) {
     })
         .then((res) => res.json())
         .then((resp) => {
-            if (resp.code == 8003 || resp.code == 8004) {
+            if (resp.code == 8003) {
                 refresh()
                 return _get(url).then((data) => data)
             }

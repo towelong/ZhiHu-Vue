@@ -11,7 +11,7 @@
         <div class="title">{{ item.title }}</div>
         <div class="content">{{ item.content }}</div>
         <div class="hot-index">
-          <img class="hot-image" src="../assets/hot-icon.png" alt="" />
+          <img class="hot-image" src="~@/assets/hot-icon.png" alt="" />
           <span>{{ item.hot }} 热度</span>
         </div>
       </el-col>

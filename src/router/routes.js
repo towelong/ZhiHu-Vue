@@ -1,14 +1,16 @@
-import Home from "../views/Home.vue"
-import Hot from "../views/Hot.vue"
-import Recommend from "../views/Recommend.vue"
-import Find from "../views/Find.vue"
-import HotSearch from "../views/HotSearch.vue"
-import Point from "../views/Point.vue"
-import Follow from "../views/Follow.vue"
-import Login from "../views/Login.vue"
-import Question from "../views/Question.vue"
-import User from "../views/User.vue"
-import ErrorPage from "../views/Error.vue"
+import Home from "@/views/home/Home.vue"
+import Hot from "@/views/home/Hot.vue"
+import Recommend from "@/views/home/Recommend.vue"
+import Find from "@/views/Find.vue"
+import HotSearch from "@/views/HotSearch.vue"
+import Point from "@/views/Point.vue"
+import Follow from "@/views/home/Follow.vue"
+import Login from "@/views/Login.vue"
+import Question from "@/views/Question.vue"
+import User from "@/views/user/User.vue"
+import UserQuestion from "@/views/user/UserQuestion.vue"
+import UserFollow from "@/views/user/UserFollow.vue"
+import ErrorPage from "@/views/Error.vue"
 
 const routes = [
     {
@@ -21,10 +23,10 @@ const routes = [
             {
                 path: "/hot",
                 component: Hot,
-                alias: "/",
                 meta: {
                     title: "热榜",
                 },
+                alias:"/"
             },
             {
                 path: "/recommend",
@@ -81,6 +83,17 @@ const routes = [
             title: "个人中心",
             auth: true,
         },
+        children: [
+            {
+                path: "/user/question",
+                component: UserQuestion,
+                alias:"/user"
+            },
+            {
+                path: "/user/follow",
+                component: UserFollow,
+            },
+        ],
     },
     {
         path: "/404",

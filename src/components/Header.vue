@@ -162,8 +162,8 @@ export default {
       return bool;
     }
 
-    function toUserPage(){
-      router.push("/user")
+    function toUserPage() {
+      router.push("/user");
     }
 
     watchEffect(() => {
@@ -180,7 +180,7 @@ export default {
       getUserDetail,
       loginOut,
       lookUserDetail,
-      toUserPage
+      toUserPage,
     };
   },
 };

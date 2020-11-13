@@ -4,9 +4,14 @@
       <div class="container__person">
         <div class="bg"></div>
         <div class="user">
-          <img src="../assets/default.jpg" alt="" />
+          <img
+            v-if="user.avatar == null"
+            src="../../assets/default.jpg"
+            alt=""
+          />
+          <img v-else :src="user.avatar" alt="" />
           <div class="user__detail">
-            <h1>title</h1>
+            <h1>{{ user.nickname }}</h1>
             <p>这家伙很懒什么都没留下</p>
           </div>
         </div>
@@ -16,22 +21,44 @@
   <Layout>
     <template v-slot:left>
       <Card>
-        <ul class="tabs">
-          <li>提问</li>
-          <li>收藏</li>
-        </ul>
+        <TabarItem :menu="menu"></TabarItem>
+        <router-view></router-view>
       </Card>
     </template>
   </Layout>
 </template>
 
 <script>
-import Card from "../components/Card";
-import Layout from "../components/Layout";
+import Cookies from "js-cookie";
+import Card from "@/components/Card";
+import Layout from "@/components/Layout";
+import TabarItem from "@/components/TabarItem";
+import { onMounted, reactive, toRefs } from "vue";
+
 export default {
   components: {
     Card,
     Layout,
+    TabarItem,
+  },
+  setup() {
+    const state = reactive({
+      menu: [
+        { path: "/user/question", name: "问题", count: 0 },
+        { path: "/user/follow", name: "关注", count: 0 },
+      ],
+      user: {},
+    });
+
+    onMounted(async () => {
+      // 获取用户信息
+      const user = Cookies.getJSON("user");
+      state.user = user;
+    });
+
+    return {
+      ...toRefs(state),
+    };
   },
 };
 </script>
@@ -40,7 +67,7 @@ export default {
 .container__person {
   position: relative;
   width: 100%;
-  height: 410px;
+  height: 360px;
 }
 
 .bg {
@@ -55,7 +82,7 @@ export default {
   display: flex;
   flex-direction: row;
   position: absolute;
-  top: 210px;
+  top: 200px;
   left: 30px;
 }
 .user img {
@@ -70,49 +97,9 @@ export default {
   margin-left: 10px;
 }
 .user__detail h1 {
-  margin-top: 32px;
+  margin-top: 42px;
 }
 .user__detail p {
   margin-top: 32px;
-}
-
-.tabs {
-  display: flex;
-}
-
-.tabs li {
-  height: 40px;
-  line-height: 40px;
-  padding: 0 15px;
-  cursor: pointer;
-  position: relative;
-  font-size: 18px;
-  color: #909399;
-  background-color: #fff;
-}
-.active {
-  color: #00adb5;
-}
-
-.tabs li::after {
-  content: "";
-  width: 0;
-  height: 2px;
-  background-color: #00adb5;
-  position: absolute;
-  left: 100%;
-  bottom: 0;
-  transition: all 0.4s;
-}
-.tabs li:hover.active {
-  color: #00adb5;
-}
-.tabs li:hover::after {
-  width: 100%;
-  left: 0;
-  transition-delay: 0.1s;
-}
-.tabs li:hover ~ li::after {
-  left: 0;
 }
 </style>

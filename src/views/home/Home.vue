@@ -17,10 +17,10 @@
 </template>
 
 <script>
-import Layout from "../components/Layout";
-import Card from "../components/Card";
-import Nav from "../components/Nav";
-import Function from "../views/Function";
+import Layout from "@/components/Layout";
+import Card from "@/components/Card";
+import Nav from "@/components/Nav";
+import Function from "@/views/Function";
 
 export default {
   name: "Home",

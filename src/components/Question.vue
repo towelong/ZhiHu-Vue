@@ -21,18 +21,6 @@
         <el-col class="summary" :span="24">{{ data.summary }}</el-col>
       </el-row>
     </div>
-
-    <div class="function">
-      <el-button type="primary" size="small" icon="el-icon-caret-top" plain
-        >赞同 {{ data.zan }}</el-button
-      >
-      <el-button
-        type="primary"
-        size="small"
-        icon="el-icon-caret-bottom"
-        plain
-      ></el-button>
-    </div>
   </div>
   <div v-if="loading" class="load"></div>
   <div v-if="noMore" class="noMoreText">
@@ -42,23 +30,38 @@
 </template>
 
 <script>
-import { computed, getCurrentInstance, onMounted, reactive, toRefs } from "vue";
-import { get } from "../service/api/api";
+import {
+  computed,
+  getCurrentInstance,
+  onMounted,
+  onUpdated,
+  reactive,
+  toRefs,
+} from "vue";
+
 export default {
-  
-  setup() {
+  name: "Question",
+  props: {
+    data: Object,
+    count: Number,
+  },
+  emits: ["load"],
+  setup(props, context) {
+    const { ctx } = getCurrentInstance();
     const state = reactive({
       hotData: [],
-      count: 5,
+      count: 0,
       loading: false,
       total: 0,
     });
 
-    onMounted(async () => {
-      let hotData = await get(`/question/all?count=${state.count}`);
-      console.log(hotData);
-      state.hotData = hotData.data.question;
-      state.total = hotData.data.total;
+    onMounted(() => {
+      state.count = props.count;
+    });
+
+    onUpdated(() => {
+      state.hotData = props.data.question;
+      state.total = props.data.total;
     });
 
     const noMore = computed(() => {
@@ -69,23 +72,20 @@ export default {
       return state.loading || noMore.value;
     });
 
-    const { ctx } = getCurrentInstance();
-
     function toQuestion(id) {
       ctx.$router.push(`/question/${id}`);
     }
 
-    async function loadMore() {
+    function loadMore() {
       state.loading = true;
-      setTimeout(async () => {
+      setTimeout(() => {
         state.count += 1;
         if (state.count <= state.total) {
-          let hotData = await get(`/question/all?count=${state.count}`);
-          state.hotData = hotData.data.question;
-          console.log(hotData);
+          console.log(state.count);
+          context.emit("load", state.count);
         }
         state.loading = false;
-      }, 1500);
+      }, 1000);
     }
 
     return {
@@ -115,6 +115,7 @@ export default {
   font-weight: 600;
   line-height: 1.6;
   color: #121212;
+  cursor: pointer;
 }
 .title p:hover {
   color: #1751b3;
